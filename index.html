@@ -31,13 +31,23 @@
 			}
 			h1 {
 				font-size: 4rem;
-				height: auto;
 			}
 			h2 {
 				font-size: 2.25rem;
 				margin-top: 1rem;
 			}
 		</style>
+		<script>
+			document.addEventListener("load", () => {
+				const linkEls = document.querySelectorAll("a");
+
+				for (let i = 0; i < linkEls.length; ++i) {
+					const linkEl = linkEls[i];
+
+					linkEl.setAttribute("target", "_blank");
+				}
+			});
+		</script>
 	</head>
 	<body>
 		<main>
