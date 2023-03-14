@@ -32,7 +32,12 @@
 					const dorklangOutputEl = document.getElementById("dorklangOutput");
 					const dorklangSubmitEl = document.getElementById("dorklangSubmit");
 
-					dorklangInputEl.value = `''(')!
+					const cachedInput = localStorage.getItem("dorklang-interpreter-input");
+
+					if (typeof cachedInput === "string") {
+						dorklangInputEl.value = cachedInput;
+					} else {
+						dorklangInputEl.value = `''(')!
 [+*+$:]!
 (+ +^*)-! !
 (+*+):!
@@ -44,6 +49,9 @@ $;!
 --+!
 ''/+!
 ~`;
+					}
+
+					localStorage.removeItem("dorklang-interpreter-input");
 
 					dorklangSubmitEl.onclick = () => {
 						const input = dorklangInputEl.value;
@@ -53,6 +61,9 @@ $;!
 							dorklangOutputEl.value = output;
 						} else {
 							alert("Cannot run that input.");
+							
+							localStorage.setItem("dorklang-interpreter-input", input);
+
 							location.reload();
 						}
 					};
