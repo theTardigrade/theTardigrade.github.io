@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type="application/javascript">
+			(() => {
+				let consoleBuffer = "";
+
+				const consoleLogOld = console.log;
+
+				console.log = (...data) => {
+					const dataLength = data.length;
+
+					for (let i = 0; i < dataLength; ++i) {
+						consoleBuffer += data[i].toString();
+					}
+
+					consoleLogOld(...data);
+				};
+
+				console.log_getBuffer = () => {
+					return consoleBuffer;
+				};
+
+				console.log_clearBuffer = () => {
+					consoleBuffer = "";
+				};
+			})();
+		</script>
+		<script type="application/javascript" src="/assets/scripts/wasm_exec.js"></script>
+		<script type="application/javascript">
+			(() => {
+				const go = new Go();
+				const wasmFilePath = "assets/main.wasm";
+				let wasmContent;
+
+				if ("instantiateStreaming" in WebAssembly) {
+					WebAssembly.instantiateStreaming(fetch(wasmFileName), go.importObject).then(function (obj) {
+						wasmContent = obj.instance;
+						go.run(wasmContent);
+					})
+				} else {
+					fetch(wasmFileName).then(resp =>
+						resp.arrayBuffer()
+					).then(bytes =>
+						WebAssembly.instantiate(bytes, go.importObject).then(function (obj) {
+							wasmContent = obj.instance;
+							go.run(wasmContent);
+						})
+					)
+				}
+			})();
+		</script>
+		<script type="application/javascript">
+			(() => {
+				function start() {
+					const dorklangInputEl = document.getElementById("dorklangInput");
+					const dorklangOutputEl = document.getElementById("dorklangOutput");
+					const dorklangSubmitEl = document.getElementById("dorklangSubmit");
+
+					dorklangSubmitEl.onclick = () => {
+						const output = dorklang(dorklangInputEl.value);
+					
+						if (typeof output === "string") {
+							dorklangOutputEl.value = output;
+						} else {
+							alert("Cannot run that input.");
+							location.reload();
+						}
+					};
+				}
+
+				(function startTest() {
+					switch (document.readyState) {
+					case "complete":
+						start();
+						break;
+					default:
+						setTimeout(startTest, 4);
+					}
+				})();
+			})();
+		</script>
+		<style>
+			@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+			html {
+				font-size: 16px;
+			}
+			html * {
+				margin: 0;
+				padding: 0;
+				border: none;
+				font-size: inherit;
+				font-family: inherit;
+				background-color: inherit;
+				color: inherit;
+			}
+			body {
+				background-color: #000;
+				color: #fff;
+				display: grid;
+				margin: 1rem;
+				gap: 1rem;
+				font-size: 2rem;
+				font-family: "Roboto", serif;
+			}
+			textarea {
+				background-color: #404040;
+				resize: none;
+				min-height: 10rem;
+				height: calc(50vh);
+				border-radius: 0.125rem;
+			}
+			h1#dorklangHeader {
+				grid-column-start: 1;
+				grid-column-end: 3;
+				text-align: center;
+				font-size: 4rem;
+				text-transform: uppercase;
+			}
+			h2#dorklangInputHeader {
+				grid-column-start: 1;
+				grid-column-end: 2;
+				text-align: left;
+			}
+			textarea#dorklangInput {
+				grid-column-start: 1;
+				grid-column-end: 2;
+			}
+			h2#dorklangOutputHeader {
+				grid-column-start: 2;
+				grid-column-end: 3;
+				text-align: right;
+			}
+			textarea#dorklangOutput {
+				grid-column-start: 2;
+				grid-column-end: 3;
+			}
+			#dorklangSubmitContainer {
+				grid-column-start: 1;
+				grid-column-end: 3;
+				text-align: center;
+			}
+			button#dorklangSubmit {
+				font-size: inherit;
+				background-color: #606060;
+				border-radius: 1rem;
+				max-width: 10rem;
+				width: 100%;
+				text-transform: uppercase;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+		<h1 id="dorklangHeader">Dorklang Interpreter</h1>
+		
+		<h2 id="dorklangInputHeader">input</h2>
+		<h2 id="dorklangOutputHeader">output</h2>
+		
+		<textarea id="dorklangInput"></textarea>
+		<textarea id="dorklangOutput" readonly></textarea>
+
+		<div id="dorklangSubmitContainer">
+			<button id="dorklangSubmit">Run</button>
+		</div>
+	</body>
+</html>
