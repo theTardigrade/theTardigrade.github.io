@@ -32,8 +32,22 @@
 					const dorklangOutputEl = document.getElementById("dorklangOutput");
 					const dorklangSubmitEl = document.getElementById("dorklangSubmit");
 
+					dorklangInputEl.value = `''(')!
+[+*+$:]!
+(+ +^*)-! !
+(+*+):!
+~++^$$:[++*][++/]!
+;:/!
+;:++[++/]!
+$;!
++(+)+!
+--+!
+''/+!
+~`;
+
 					dorklangSubmitEl.onclick = () => {
-						const output = dorklang(dorklangInputEl.value);
+						const input = dorklangInputEl.value;
+						const output = dorklang(input);
 					
 						if (typeof output === "string") {
 							dorklangOutputEl.value = output;
@@ -92,6 +106,7 @@
 				min-height: 10rem;
 				height: calc(50vh);
 				border-radius: 0.125rem;
+				padding: 0.125rem 0.25rem;
 			}
 			h1#dorklangHeader {
 				grid-column-start: 1;
