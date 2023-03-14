@@ -1,31 +1,6 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<script type="application/javascript">
-			(() => {
-				let consoleBuffer = "";
-
-				const consoleLogOld = console.log;
-
-				console.log = (...data) => {
-					const dataLength = data.length;
-
-					for (let i = 0; i < dataLength; ++i) {
-						consoleBuffer += data[i].toString();
-					}
-
-					consoleLogOld(...data);
-				};
-
-				console.log_getBuffer = () => {
-					return consoleBuffer;
-				};
-
-				console.log_clearBuffer = () => {
-					consoleBuffer = "";
-				};
-			})();
-		</script>
 		<script type="application/javascript" src="/assets/scripts/wasm_exec.js"></script>
 		<script type="application/javascript">
 			(() => {
@@ -34,12 +9,12 @@
 				let wasmContent;
 
 				if ("instantiateStreaming" in WebAssembly) {
-					WebAssembly.instantiateStreaming(fetch(wasmFileName), go.importObject).then(function (obj) {
+					WebAssembly.instantiateStreaming(fetch(wasmFilePath), go.importObject).then(function (obj) {
 						wasmContent = obj.instance;
 						go.run(wasmContent);
 					})
 				} else {
-					fetch(wasmFileName).then(resp =>
+					fetch(wasmFilePath).then(resp =>
 						resp.arrayBuffer()
 					).then(bytes =>
 						WebAssembly.instantiate(bytes, go.importObject).then(function (obj) {
